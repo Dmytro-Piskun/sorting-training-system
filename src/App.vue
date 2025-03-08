@@ -44,11 +44,11 @@ function handleCloseStartGameModal() {
 </script>
 
 <template>
- <div class="min-h-screen flex flex-col p-12">
+ <div class="min-h-screen flex flex-col p-12 max-sm:p-1">
     <!-- Header Section -->
     <header class="flex justify-between items-center mb-6">
       <div class="flex-none w-1/3">
-        <h1 class="text-2xl">Sorting Training System</h1>
+        <h1 class="text-2xl  max-sm:text-xs">Sorting Training System</h1>
       </div>
       <div v-if="gameState.isStarted" class="flex-none w-1/3 flex justify-center">
         <Timer />
