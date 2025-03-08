@@ -8,11 +8,10 @@ const activeRow = ref(null);
 
 function handleDragStart(index) {
   activeRow.value = index;
-
 }
 
-function handleDragOver(event) {
-  event.preventDefault();
+function handleDragOver(e) {
+  e.preventDefault();
 }
 
 function handleDrop(index) {
@@ -29,48 +28,43 @@ function handleDrop(index) {
   if (isSorted) {
     endGame();
   }
-
 }
 
 function handleDragEnd() {
   activeRow.value = null;
 }
-
-
-
 </script>
 
 <template>
   <table class="w-full rounded-md bg-white border-collapse flex-grow">
     <thead v-if="gameState.people.length !== 0">
+      <tr v-if="gameState.isStarted" class="transition duration-200 text-gray-500 opacity-80" :class="{
+        'opacity-60 bg-gray-50 cursor-not-allowed': !gameState.isStarted,
+      }">
+        <th class="text-left px-4 py-4 border-b border-gray-100 font-normal max-sm:px-2 max-sm:py-2 text-sm">Sort the people by the amount of potatoes in descending order</th>
+        <th class="text-left px-4 py-4 border-b border-gray-100 font-normal max-sm:px-2 max-sm:py-2 text-sm"></th>
+        <th class="text-right px-4 py-4 border-b border-gray-100 font-normal max-sm:px-2 max-sm:py-2 text-sm">{{gameState.people.length}} people in the list</th>
+      </tr>
       <tr class="transition duration-200" :class="{
         'opacity-60 bg-gray-50 cursor-not-allowed': !gameState.isStarted,
       }">
-        <th class="text-left px-4 py-4 border-b border-gray-100 font-normal">Name</th>
-        <th class="text-center px-4 py-4 border-b border-gray-100 font-normal">Email</th>
-        <th class="text-right px-4 py-4 border-b border-gray-100 font-normal">Potatoes</th>
+        <th class="text-left px-4 py-4 border-b border-gray-100 font-normal max-sm:px-2 max-sm:py-2 max-sm:text-sm">Name</th>
+        <th class="text-center px-4 py-4 border-b border-gray-100 font-normal max-sm:px-2 max-sm:py-2 max-sm:text-sm">Email</th>
+        <th class="text-right px-4 py-4 border-b border-gray-100 font-normal max-sm:px-2 max-sm:py-2 max-sm:text-sm">Potatoes</th>
       </tr>
     </thead>
     <TransitionGroup name="row" tag="tbody">
       <template v-if="gameState.people.length === 0">
         <tr>
-          <td colspan="3" class="text-center py-4 text-gray-500">
+          <td colspan="3" class="text-center py-4 text-gray-500 max-sm:text-sm">
             No people to display
           </td>
         </tr>
       </template>
       <template v-else>
-        <SortingRow
-          v-for="(person, index) in gameState.people"
-          :key="person.potatoesAmount"
-          :activeRow="activeRow"
-          :person="person"
-          :align="['left', 'center', 'right']"
-          @dragstart="handleDragStart(index)"
-          @dragover="handleDragOver"
-          @drop="handleDrop(index)"
-          @dragend="handleDragEnd"
-        />
+        <SortingRow v-for="(person, index) in gameState.people" :key="person.potatoesAmount" :activeRow="activeRow"
+          :person="person" :align="['left', 'center', 'right']" @dragstart="handleDragStart(index)"
+          @dragover="handleDragOver" @drop="handleDrop(index)" @dragend="handleDragEnd" />
       </template>
     </TransitionGroup>
   </table>

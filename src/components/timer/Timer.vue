@@ -18,5 +18,5 @@ const formatTime = (seconds) => {
 </script>
 
 <template>
-    <p class="text-lg">Timer: {{ formatTime(elapsedTime) }}</p>
+    <p class="text-lg max-sm:text-sm">Timer: {{ formatTime(elapsedTime) }}</p>
 </template>
