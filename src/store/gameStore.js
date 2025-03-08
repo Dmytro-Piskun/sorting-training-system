@@ -2,6 +2,7 @@ import { reactive } from "vue";
 import { generatePeople } from "../utils/peopleUtils";
 import { uiState } from "./uiStore";
 
+
 export const gameState = reactive({
     isStarted: false,
     people: [],
