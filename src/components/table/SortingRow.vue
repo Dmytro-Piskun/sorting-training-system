@@ -5,6 +5,7 @@ const props = defineProps({
     person: Object,
     align: Array,
     activeRow: Number,
+    index: Number,
 });
 
 function handleDragStart(e) {
@@ -14,7 +15,7 @@ function handleDragStart(e) {
 </script>
 
 <template>
-    <tr v-bind:draggable="gameState.isStarted" class="hover:bg-orange-50 transition duration-200"
+    <tr v-bind:draggable="gameState.isStarted" :data-index="index" class="hover:bg-orange-50 transition duration-200"
         @dragstart="handleDragStart" @dragend="handleDragEnd" :class="[
             'transition duration-200',
             gameState.isStarted ? 'cursor-grab' : 'opacity-60 bg-gray-50 cursor-not-allowed'

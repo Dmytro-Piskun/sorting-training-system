@@ -33,7 +33,6 @@ export function generatePeople(amount) {
             people.push(randomPeople);
         }
 
-        console.log(checkDescendingOrder(people));
 
     } while(checkDescendingOrder(people));
 
