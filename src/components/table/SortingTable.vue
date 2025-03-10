@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onUnmounted } from 'vue';
 import { gameState, endGame } from '../../store/gameStore';
 import SortingRow from './SortingRow.vue';
 import { checkDescendingOrder } from '../../utils/sortUtils';
@@ -8,14 +8,13 @@ const activeRow = ref(null);
 const ghostPosition = ref({ x: 0, y: 0 });
 const showGhost = ref(false);
 const activePerson = ref(null);
+const scrollInterval = ref(null);
 
-// Computed property for ghost element style
 const ghostStyle = computed(() => {
   return {
     top: `${ghostPosition.value.y}px`,
     left: `${ghostPosition.value.x}px`,
     transform: 'translate(-50%, -50%)',
-
   };
 });
 
@@ -37,6 +36,7 @@ function handleDrop(index) {
   activeRow.value = null;
   showGhost.value = false;
   activePerson.value = null;
+  stopAutoScroll();
 
   const isSorted = checkDescendingOrder(gameState.people);
 
@@ -49,6 +49,7 @@ function handleDragEnd() {
   activeRow.value = null;
   showGhost.value = false;
   activePerson.value = null;
+  stopAutoScroll();
 }
 
 function handleTouchStart(e, index) {
@@ -70,7 +71,6 @@ function handleTouchStart(e, index) {
       showGhost.value = true;
     }
   }, 100);
-
 }
 
 function handleTouchMove(e) {
@@ -85,6 +85,7 @@ function handleTouchMove(e) {
     y: e.touches[0].clientY
   };
 
+  checkForAutoScroll(e.touches[0].clientY);
 }
 
 function handleTouchEnd(e) {
@@ -93,6 +94,7 @@ function handleTouchEnd(e) {
   }
 
   e.preventDefault();
+  stopAutoScroll();
 
   const touchX = e.changedTouches[0].clientX;
   const touchY = e.changedTouches[0].clientY;
@@ -123,14 +125,42 @@ function handleTouchEnd(e) {
   activePerson.value = null;
 }
 
+function checkForAutoScroll(touchY) {
+  const windowHeight = window.innerHeight;
+  const scrollThreshold = 60; 
+  const scrollSpeed = 5; 
+  
+  stopAutoScroll(); 
+  
+  if (touchY < scrollThreshold) {
+
+    scrollInterval.value = setInterval(() => {
+      window.scrollBy(0, -scrollSpeed);
+    }, 16); 
+  } else if (touchY > windowHeight - scrollThreshold) {
+  
+    scrollInterval.value = setInterval(() => {
+      window.scrollBy(0, scrollSpeed);
+    }, 16); 
+  }
+}
+
+function stopAutoScroll() {
+  if (scrollInterval.value) {
+    clearInterval(scrollInterval.value);
+    scrollInterval.value = null;
+  }
+}
+
+onUnmounted(() => {
+  stopAutoScroll();
+});
 </script>
 
 <template>
   <div v-if="gameState.isStarted" class="transition duration-200 rounded-t-md bg-zinc-50 text-gray-500 opacity-80 w-full flex justify-between">
     <div class="text-left px-4 py-4 border-b border-gray-100 font-normal max-sm:px-2 max-sm:py-2 text-sm">Sort in descending order</div>
     <div class="text-left px-4 py-4 border-b border-gray-100 font-normal max-sm:px-2 max-sm:py-2 text-sm">{{ gameState.people.length }} people in the list</div>
-
-
   </div>
   <table class="w-full rounded-md bg-white border-collapse flex-grow">
     <thead v-if="gameState.people.length !== 0">
