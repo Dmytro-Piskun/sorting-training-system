@@ -3,7 +3,7 @@ import Timer from "./components/timer/Timer.vue";
 import Button from "./components/ui/Button.vue";
 import Input from "./components/ui/Input.vue";
 import Modal from "./components/ui/Modal.vue";
-import SortingTable from "./components/table/SortingTable.vue";
+import SortingTable from "./components/sorting-table/SortingTable.vue";
 
 import { uiState, openStartGameModal, closeStartGameModal, closeEndGameModal } from "./store/uiStore";
 import { gameState, startGame } from "./store/gameStore";
